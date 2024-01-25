@@ -10,9 +10,14 @@ from typing import List
 
 from termcolor import colored
 
-def bench(cmd: List[str], cwd: str) -> float:
-    # TODO: run benchmark
-    return 1.0
+
+def bench(cmd: List[str], cwd: str, filename: str, name: str):
+    subprocess.run(
+        ["hyperfine", "--warmup", "3", "--runs", "10", "-n", name, " ".join(cmd + [filename])],
+        cwd=cwd,
+        env=os.environ.copy(),
+        check=True,
+    )
 
 
 def test(cmd: List[str], cwd: str) -> bool:
@@ -121,8 +126,7 @@ def main():
 
         if args.action == "run":
             filename = generate_input(args.size)
-            print("TODO: run benchmark")
-            bench(config["run"], config["dir"])
+            bench(config["run"], config["dir"], filename, config["name"])
 
 
 if __name__ == "__main__":
